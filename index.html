@@ -2,7 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
     <title>Экзорцист Runner</title>
     <style>
         * {
@@ -12,17 +15,18 @@
         }
         
         body {
-            background: #000;
+            background: #1a1a2e;
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            position: fixed;
+            font-family: 'Courier New', monospace;
+            touch-action: none;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
-            height: 100vh;
-            width: 100vw;
-            font-family: 'Courier New', monospace;
-            overflow: hidden;
-            touch-action: none;
-            position: fixed;
         }
         
         #gameContainer {
@@ -39,56 +43,60 @@
             background: #1a1a2e;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
-            border: 4px solid #0f3460;
+            border: none;
+            width: 100%;
+            height: 100%;
         }
         
         #ui {
-            position: absolute;
+            position: fixed;
             top: 10px;
             left: 10px;
             color: #fff;
-            font-size: 16px;
-            text-shadow: 2px 2px 0 #000;
+            font-size: 18px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             pointer-events: none;
             z-index: 10;
+            font-weight: bold;
         }
         
         @media (max-width: 768px) {
             #ui {
-                font-size: 14px;
-                top: 5px;
-                left: 5px;
+                font-size: 16px;
+                top: 15px;
+                left: 15px;
             }
         }
         
         #gameOver {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.95);
-            padding: 30px;
-            border: 4px solid #e94560;
+            padding: 25px;
+            border: 3px solid #e94560;
             color: #fff;
             text-align: center;
             display: none;
-            max-width: 90%;
+            max-width: 85%;
             box-sizing: border-box;
+            z-index: 1000;
         }
         
         #gameOver h1 {
-            font-size: 32px;
-            margin-bottom: 15px;
+            font-size: 28px;
+            margin-bottom: 12px;
             color: #e94560;
         }
         
         #gameOver p {
-            font-size: 16px;
-            margin: 8px 0;
+            font-size: 15px;
+            margin: 6px 0;
         }
         
         #gameOver button {
-            margin-top: 15px;
+            margin-top: 12px;
             padding: 12px 24px;
             font-size: 16px;
             background: #e94560;
@@ -97,21 +105,25 @@
             cursor: pointer;
             font-family: 'Courier New', monospace;
             transition: all 0.3s;
+            font-weight: bold;
         }
         
         @media (max-width: 768px) {
             #gameOver {
                 padding: 20px;
+                max-width: 90%;
             }
             #gameOver h1 {
                 font-size: 24px;
+                margin-bottom: 10px;
             }
             #gameOver p {
                 font-size: 14px;
             }
             #gameOver button {
-                padding: 10px 20px;
-                font-size: 14px;
+                padding: 11px 22px;
+                font-size: 15px;
+                margin-top: 10px;
             }
         }
         
@@ -121,57 +133,64 @@
         }
         
         #startScreen {
-            position: absolute;
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             background: rgba(0, 0, 0, 0.95);
-            padding: 30px;
-            border: 4px solid #0f3460;
+            padding: 25px;
+            border: 3px solid #0f3460;
             color: #fff;
             text-align: center;
-            max-width: 90%;
+            max-width: 85%;
             box-sizing: border-box;
+            z-index: 1000;
         }
         
         #startScreen h1 {
-            font-size: 32px;
-            margin-bottom: 15px;
+            font-size: 28px;
+            margin-bottom: 12px;
             color: #e94560;
             text-shadow: 3px 3px 0 #000;
         }
         
         #startScreen p {
-            font-size: 14px;
-            margin: 10px 0;
+            font-size: 13px;
+            margin: 8px 0;
             color: #aaa;
+            line-height: 1.4;
         }
         
         #startScreen button {
-            margin-top: 20px;
-            padding: 15px 30px;
-            font-size: 20px;
+            margin-top: 18px;
+            padding: 14px 28px;
+            font-size: 18px;
             background: #0f3460;
             color: #fff;
             border: 2px solid #e94560;
             cursor: pointer;
             font-family: 'Courier New', monospace;
             transition: all 0.3s;
+            font-weight: bold;
         }
         
         @media (max-width: 768px) {
             #startScreen {
                 padding: 20px;
+                max-width: 90%;
             }
             #startScreen h1 {
                 font-size: 24px;
+                margin-bottom: 10px;
             }
             #startScreen p {
                 font-size: 12px;
+                margin: 6px 0;
             }
             #startScreen button {
                 padding: 12px 24px;
                 font-size: 16px;
+                margin-top: 15px;
             }
         }
         
@@ -212,12 +231,12 @@
         }
 
         #musicStatus {
-            position: absolute;
-            top: 5px;
-            right: 10px;
+            position: fixed;
+            top: 15px;
+            right: 15px;
             color: #00ff00;
-            font-size: 12px;
-            text-shadow: 2px 2px 0 #000;
+            font-size: 14px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
             z-index: 10;
         }
     </style>
@@ -273,38 +292,21 @@
         
         // Адаптивный размер canvas
         function resizeCanvas() {
-            const viewportWidth = window.innerWidth;
-            const viewportHeight = window.innerHeight;
+            const vw = window.innerWidth;
+            const vh = window.innerHeight;
             
-            // Для Telegram Mini App убираем отступы
-            const padding = 0;
-            const maxWidth = viewportWidth - padding;
-            const maxHeight = viewportHeight - padding;
-            
-            const ratio = 800 / 400;
-            
-            let newWidth = maxWidth;
-            let newHeight = newWidth / ratio;
-            
-            // Если высота слишком большая, уменьшаем по высоте
-            if (newHeight > maxHeight) {
-                newHeight = maxHeight;
-                newWidth = newHeight * ratio;
-            }
-            
-            // На мобильных устройствах делаем игру побольше
-            if (viewportWidth < 768) {
-                newWidth = Math.min(viewportWidth, newHeight * ratio);
-                newHeight = newWidth / ratio;
-            }
-            
-            canvas.style.width = Math.floor(newWidth) + 'px';
-            canvas.style.height = Math.floor(newHeight) + 'px';
+            // На мобильных устройствах заполняем весь экран
+            canvas.style.width = vw + 'px';
+            canvas.style.height = vh + 'px';
         }
         
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('orientationchange', resizeCanvas);
+        
+        // Вызываем сразу и с задержкой для Telegram
         resizeCanvas();
+        setTimeout(resizeCanvas, 100);
+        setTimeout(resizeCanvas, 500);
         
         // Создание простых звуковых эффектов
         function createBeep(frequency, duration) {
@@ -435,10 +437,10 @@
             startScreen.style.display = 'none';
             gameOverScreen.style.display = 'none';
             
-            // Показать кнопки управления на мобилке
-            if ('ontouchstart' in window) {
-                controls.style.display = 'flex';
-            }
+            // НЕ показываем кнопки управления - достаточно тапа по экрану
+            // if ('ontouchstart' in window) {
+            //     controls.style.display = 'flex';
+            // }
             
             // Запуск музыки
             bgMusic.currentTime = 0;
