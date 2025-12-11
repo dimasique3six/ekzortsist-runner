@@ -8,6 +8,12 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-fullscreen">
     <title>Экзорцист Runner</title>
     <style>
+        /* PICO-8 шрифт */
+        @font-face {
+            font-family: 'pico8';
+            src: url('data:font/woff2;base64,d09GMgABAAAAAANYAA0AAAAABmwAAAMKAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAGhYbEBwaBmAAgTIIMAkpEQgKgVSBMwsOAAE2AiQDCAQgBYRuB0sbpAYjB8IuMOx8VDQaiFEWPvsvA7Zb3f9/ziWSLEmUJEtUqZKkStJTqZJJnlYqlST+0X17v+u+7vu+M3dm5s7cu/c5994599xzz73n3HPv+b7Pu98AAAD//wMA') format('woff2');
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -15,7 +21,7 @@
         }
         
         body {
-            background: #1a1a2e;
+            background: #000;
             margin: 0;
             padding: 0;
             width: 100vw;
@@ -40,9 +46,11 @@
         
         canvas {
             display: block;
-            background: #1a1a2e;
+            background: #000;
             image-rendering: pixelated;
             image-rendering: crisp-edges;
+            image-rendering: -moz-crisp-edges;
+            -ms-interpolation-mode: nearest-neighbor;
             border: none;
             width: 100%;
             height: 100%;
@@ -50,194 +58,89 @@
         
         #ui {
             position: fixed;
-            top: 10px;
-            left: 10px;
+            top: 15px;
+            left: 15px;
             color: #fff;
-            font-size: 18px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            font-size: 16px;
+            text-shadow: 2px 2px 0 #000;
             pointer-events: none;
             z-index: 10;
             font-weight: bold;
-        }
-        
-        @media (max-width: 768px) {
-            #ui {
-                font-size: 16px;
-                top: 15px;
-                left: 15px;
-            }
-        }
-        
-        #gameOver {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            padding: 25px;
-            border: 3px solid #e94560;
-            color: #fff;
-            text-align: center;
-            display: none;
-            max-width: 85%;
-            box-sizing: border-box;
-            z-index: 1000;
-        }
-        
-        #gameOver h1 {
-            font-size: 28px;
-            margin-bottom: 12px;
-            color: #e94560;
-        }
-        
-        #gameOver p {
-            font-size: 15px;
-            margin: 6px 0;
-        }
-        
-        #gameOver button {
-            margin-top: 12px;
-            padding: 12px 24px;
-            font-size: 16px;
-            background: #e94560;
-            color: #fff;
-            border: none;
-            cursor: pointer;
             font-family: 'Courier New', monospace;
-            transition: all 0.3s;
-            font-weight: bold;
         }
         
-        @media (max-width: 768px) {
-            #gameOver {
-                padding: 20px;
-                max-width: 90%;
-            }
-            #gameOver h1 {
-                font-size: 24px;
-                margin-bottom: 10px;
-            }
-            #gameOver p {
-                font-size: 14px;
-            }
-            #gameOver button {
-                padding: 11px 22px;
-                font-size: 15px;
-                margin-top: 10px;
-            }
-        }
-        
-        #gameOver button:hover {
-            background: #ff6b81;
-            transform: scale(1.1);
-        }
-        
-        #startScreen {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            padding: 25px;
-            border: 3px solid #0f3460;
-            color: #fff;
-            text-align: center;
-            max-width: 85%;
-            box-sizing: border-box;
-            z-index: 1000;
-        }
-        
-        #startScreen h1 {
-            font-size: 28px;
-            margin-bottom: 12px;
-            color: #e94560;
-            text-shadow: 3px 3px 0 #000;
-        }
-        
-        #startScreen p {
-            font-size: 13px;
-            margin: 8px 0;
-            color: #aaa;
-            line-height: 1.4;
-        }
-        
-        #startScreen button {
-            margin-top: 18px;
-            padding: 14px 28px;
-            font-size: 18px;
-            background: #0f3460;
-            color: #fff;
-            border: 2px solid #e94560;
-            cursor: pointer;
-            font-family: 'Courier New', monospace;
-            transition: all 0.3s;
-            font-weight: bold;
-        }
-        
-        @media (max-width: 768px) {
-            #startScreen {
-                padding: 20px;
-                max-width: 90%;
-            }
-            #startScreen h1 {
-                font-size: 24px;
-                margin-bottom: 10px;
-            }
-            #startScreen p {
-                font-size: 12px;
-                margin: 6px 0;
-            }
-            #startScreen button {
-                padding: 12px 24px;
-                font-size: 16px;
-                margin-top: 15px;
-            }
-        }
-        
-        #startScreen button:hover {
-            background: #e94560;
-            transform: scale(1.1);
-        }
-        
-        #controls {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 20px;
-            z-index: 100;
-        }
-        
-        .control-btn {
-            width: 70px;
-            height: 70px;
-            background: rgba(15, 52, 96, 0.8);
-            border: 3px solid #e94560;
-            border-radius: 50%;
-            color: #fff;
-            font-size: 28px;
-            cursor: pointer;
-            user-select: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            touch-action: manipulation;
-        }
-        
-        .control-btn:active {
-            background: rgba(233, 69, 96, 0.9);
-            transform: scale(0.95);
-        }
-
         #musicStatus {
             position: fixed;
             top: 15px;
             right: 15px;
             color: #00ff00;
             font-size: 14px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            text-shadow: 2px 2px 0 #000;
             z-index: 10;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .screen-overlay {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: #000;
+            padding: 30px;
+            border: 4px solid #1d2b53;
+            color: #fff;
+            text-align: center;
+            max-width: 85%;
+            box-sizing: border-box;
+            z-index: 1000;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .screen-overlay h1 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #ff004d;
+            text-shadow: 2px 2px 0 #000;
+        }
+        
+        .screen-overlay p {
+            font-size: 12px;
+            margin: 8px 0;
+            color: #c2c3c7;
+            line-height: 1.4;
+        }
+        
+        .screen-overlay button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            background: #1d2b53;
+            color: #fff;
+            border: 2px solid #ff004d;
+            cursor: pointer;
+            font-family: 'Courier New', monospace;
+            transition: all 0.1s;
+            font-weight: bold;
+        }
+        
+        .screen-overlay button:active {
+            background: #ff004d;
+            transform: scale(0.95);
+        }
+        
+        #gameOver {
+            display: none;
+        }
+        
+        #prizeBtn {
+            background: #00e436;
+            color: #000;
+            border-color: #00e436;
+            margin-top: 10px;
+        }
+        
+        #prizeBtn:active {
+            background: #29adff;
         }
     </style>
 </head>
@@ -246,104 +149,109 @@
         <canvas id="gameCanvas" width="800" height="400"></canvas>
         
         <div id="ui">
-            <div>ОЧКИ: <span id="score">0</span></div>
-            <div>МАКС: <span id="highScore">0</span></div>
+            <div>SCORE: <span id="score">0</span></div>
+            <div>BEST: <span id="highScore">0</span></div>
         </div>
 
-        <div id="musicStatus">🎵</div>
+        <div id="musicStatus">♪</div>
         
-        <div id="startScreen">
-            <h1>🎤 ЭКЗОРЦИСТ RUNNER 🎤</h1>
-            <p>ПРЫГАЙ ЧЕРЕЗ ПРЕПЯТСТВИЯ</p>
+        <div id="startScreen" class="screen-overlay">
+            <h1>🎤 EXORCIST RUNNER 🎤</h1>
             <p>━━━━━━━━━━━━━━━━━━━</p>
-            <p>ПК: ПРОБЕЛ / ↑</p>
-            <p>МОБИЛКА: ТАП ПО ЭКРАНУ</p>
+            <p>JUMP OVER OBSTACLES</p>
             <p>━━━━━━━━━━━━━━━━━━━</p>
-            <p style="font-size: 16px; color: #666;">НАБЕРИ 100+ ОЧКОВ ДЛЯ ПРИЗА</p>
-            <button id="startBtn">▶ НАЧАТЬ ИГРУ</button>
+            <p>PC: SPACE / ↑</p>
+            <p>MOBILE: TAP SCREEN</p>
+            <p>━━━━━━━━━━━━━━━━━━━</p>
+            <p style="color: #ffec27;">GET 100+ FOR PRIZE</p>
+            <button id="startBtn">▶ START</button>
         </div>
         
-        <div id="gameOver">
+        <div id="gameOver" class="screen-overlay">
             <h1>☠ GAME OVER ☠</h1>
-            <p>ТВОЙ СЧЁТ: <span id="finalScore">0</span></p>
-            <p>РЕКОРД: <span id="finalHighScore">0</span></p>
-            <button id="restartBtn">🔄 ЕЩЁ РАЗ</button>
-            <button id="prizeBtn" style="display:none; background: #00ff00; color: #000; margin-top: 10px;">🎁 ЗАБРАТЬ ПРИЗ</button>
-        </div>
-        
-        <div id="controls" style="display: none;">
-            <div class="control-btn" id="jumpBtn">↑</div>
+            <p>SCORE: <span id="finalScore">0</span></p>
+            <p>BEST: <span id="finalHighScore">0</span></p>
+            <button id="restartBtn">↻ RETRY</button>
+            <button id="prizeBtn" style="display:none;">🎁 GET PRIZE</button>
         </div>
     </div>
 
-    <!-- ЗДЕСЬ УКАЖИ НАЗВАНИЕ СВОЕГО MP3 ФАЙЛА -->
+    <!-- ЗАМЕНИ НА ИМЯ СВОЕГО MP3 ФАЙЛА -->
     <audio id="bgMusic" loop preload="auto">
         <source src="track.mp3" type="audio/mpeg">
     </audio>
 
     <script>
+        // ====== PICO-8 ПАЛИТРА ======
+        const PICO8 = {
+            BLACK: '#000000',
+            DARK_BLUE: '#1d2b53',
+            DARK_PURPLE: '#7e2553',
+            DARK_GREEN: '#008751',
+            BROWN: '#ab5236',
+            DARK_GRAY: '#5f574f',
+            LIGHT_GRAY: '#c2c3c7',
+            WHITE: '#fff1e8',
+            RED: '#ff004d',
+            ORANGE: '#ffa300',
+            YELLOW: '#ffec27',
+            GREEN: '#00e436',
+            BLUE: '#29adff',
+            INDIGO: '#83769c',
+            PINK: '#ff77a8',
+            PEACH: '#ffccaa'
+        };
+        
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const startScreen = document.getElementById('startScreen');
         const gameOverScreen = document.getElementById('gameOver');
         const bgMusic = document.getElementById('bgMusic');
-        const controls = document.getElementById('controls');
         const musicStatus = document.getElementById('musicStatus');
         
         // Адаптивный размер canvas
         function resizeCanvas() {
             const vw = window.innerWidth;
             const vh = window.innerHeight;
-            
-            // На мобильных устройствах заполняем весь экран
             canvas.style.width = vw + 'px';
             canvas.style.height = vh + 'px';
         }
         
         window.addEventListener('resize', resizeCanvas);
         window.addEventListener('orientationchange', resizeCanvas);
-        
-        // Вызываем сразу и с задержкой для Telegram
         resizeCanvas();
         setTimeout(resizeCanvas, 100);
         setTimeout(resizeCanvas, 500);
         
-        // Создание простых звуковых эффектов
-        function createBeep(frequency, duration) {
+        // Звуковые эффекты
+        function beep(freq, duration) {
             try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = frequency;
-                oscillator.type = 'square';
-                
-                gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + duration);
-            } catch(e) {
-                console.log('Звук не поддерживается');
-            }
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.frequency.value = freq;
+                osc.type = 'square';
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + duration);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + duration);
+            } catch(e) {}
         }
         
-        // Проверка загрузки музыки
-        bgMusic.addEventListener('canplay', function() {
-            console.log('✅ Музыка загружена и готова к воспроизведению');
-            musicStatus.textContent = '🎵 READY';
+        // Проверка музыки
+        bgMusic.addEventListener('canplay', () => {
+            console.log('✅ Music ready');
+            musicStatus.textContent = '♪';
         });
         
-        bgMusic.addEventListener('error', function(e) {
-            console.error('❌ Ошибка загрузки музыки:', e);
-            musicStatus.textContent = '🔇';
+        bgMusic.addEventListener('error', (e) => {
+            console.error('❌ Music error:', e);
+            musicStatus.textContent = '♪̸';
         });
         
         // Игровые переменные
-        let gameStarted = false;
         let gameRunning = false;
         let score = 0;
         let highScore = localStorage.getItem('highScore') || 0;
@@ -352,44 +260,84 @@
         // Игрок
         const player = {
             x: 100,
-            y: 300,
-            width: 40,
-            height: 40,
+            y: 308,  // На земле (обочина начинается с 340)
+            width: 28,
+            height: 32,
             velY: 0,
             jumping: false,
             gravity: 0.8,
-            jumpPower: -15
+            jumpPower: -14,
+            frame: 0,
+            animSpeed: 0
         };
         
-        // Препятствия
+        // Городские препятствия
         let obstacles = [];
         let obstacleTimer = 0;
-        let gameSpeed = 5;
+        let gameSpeed = 6;
         
-        function createObstacle() {
-            const types = ['box', 'spike', 'tall'];
-            const type = types[Math.floor(Math.random() * types.length)];
-            
-            let obs = {
-                x: canvas.width,
-                type: type
-            };
-            
-            if (type === 'box') {
-                obs.y = 300;
-                obs.width = 40;
-                obs.height = 40;
-            } else if (type === 'spike') {
-                obs.y = 320;
-                obs.width = 30;
-                obs.height = 20;
-            } else { // tall
-                obs.y = 280;
-                obs.width = 30;
-                obs.height = 60;
+        // Фоновые здания для параллакса
+        let buildings = [];
+        let snowflakes = [];
+        
+        function initBuildings() {
+            buildings = [];
+            // Питерские здания (более высокие и узкие)
+            for (let i = 0; i < 10; i++) {
+                const building = {
+                    x: i * 130,
+                    height: 150 + Math.random() * 180,
+                    width: 60 + Math.random() * 50,
+                    color: Math.random() > 0.7 ? PICO8.DARK_PURPLE : PICO8.DARK_BLUE,
+                    windows: []
+                };
+                
+                // Генерируем статичные окна
+                for (let y = 12; y < building.height - 10; y += 16) {
+                    for (let x = 8; x < building.width - 8; x += 14) {
+                        building.windows.push({
+                            x: x,
+                            y: y,
+                            lit: Math.random() > 0.8  // Только 20% окон горят
+                        });
+                    }
+                }
+                
+                buildings.push(building);
             }
+        }
+        
+        function initSnow() {
+            snowflakes = [];
+            for (let i = 0; i < 40; i++) {
+                snowflakes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * 340,
+                    speed: 0.3 + Math.random() * 0.5,  // Медленнее
+                    size: Math.random() > 0.5 ? 3 : 2   // Больше
+                });
+            }
+        }
+        initBuildings();
+        
+        // Создание препятствий
+        function createObstacle() {
+            const types = [
+                { type: 'police_car', width: 40, height: 20, color: PICO8.BLUE },
+                { type: 'cone', width: 20, height: 28, color: PICO8.ORANGE },
+                { type: 'barrier', width: 40, height: 20, color: PICO8.YELLOW },
+                { type: 'hydrant', width: 24, height: 28, color: PICO8.RED }
+            ];
             
-            obstacles.push(obs);
+            const obs = types[Math.floor(Math.random() * types.length)];
+            obstacles.push({
+                x: canvas.width,
+                y: 340 - obs.height,
+                width: obs.width,
+                height: obs.height,
+                type: obs.type,
+                color: obs.color
+            });
         }
         
         // Управление
@@ -397,7 +345,7 @@
             if (!player.jumping && gameRunning) {
                 player.velY = player.jumpPower;
                 player.jumping = true;
-                createBeep(440, 0.1);
+                beep(440, 0.1);
             }
         }
         
@@ -414,67 +362,56 @@
             jump();
         });
         
-        document.getElementById('jumpBtn').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            jump();
-        });
-        
         // Старт игры
         document.getElementById('startBtn').addEventListener('click', startGame);
         document.getElementById('restartBtn').addEventListener('click', startGame);
         
         function startGame() {
-            gameStarted = true;
             gameRunning = true;
             score = 0;
             obstacles = [];
             obstacleTimer = 0;
-            gameSpeed = 5;
-            player.y = 300;
+            gameSpeed = 6;
+            player.y = 308;  // На земле
             player.velY = 0;
             player.jumping = false;
+            initBuildings();
+            initSnow();
             
             startScreen.style.display = 'none';
             gameOverScreen.style.display = 'none';
             
-            // НЕ показываем кнопки управления - достаточно тапа по экрану
-            // if ('ontouchstart' in window) {
-            //     controls.style.display = 'flex';
-            // }
-            
-            // Запуск музыки
             bgMusic.currentTime = 0;
             bgMusic.play().then(() => {
-                console.log('🎵 Музыка играет');
-                musicStatus.textContent = '🎵 PLAYING';
+                console.log('🎵 Music playing');
+                musicStatus.textContent = '♪';
             }).catch(e => {
-                console.log('⚠️ Музыка не запустилась:', e.message);
-                musicStatus.textContent = '🔇';
+                console.log('⚠️ Music failed:', e.message);
+                musicStatus.textContent = '♪̸';
             });
             
             gameLoop();
         }
         
         // Проверка столкновений
-        function checkCollision(rect1, rect2) {
-            return rect1.x < rect2.x + rect2.width &&
-                   rect1.x + rect1.width > rect2.x &&
-                   rect1.y < rect2.y + rect2.height &&
-                   rect1.y + rect1.height > rect2.y;
+        function checkCollision(r1, r2) {
+            return r1.x < r2.x + r2.width &&
+                   r1.x + r1.width > r2.x &&
+                   r1.y < r2.y + r2.height &&
+                   r1.y + r1.height > r2.y;
         }
         
         // Конец игры
         function endGame() {
             gameRunning = false;
             
-            // Остановка музыки
             if (!bgMusic.paused) {
                 bgMusic.pause();
                 bgMusic.currentTime = 0;
-                musicStatus.textContent = '🔇';
+                musicStatus.textContent = '♪̸';
             }
             
-            createBeep(220, 0.5);
+            beep(220, 0.5);
             
             if (score > highScore) {
                 highScore = score;
@@ -484,80 +421,289 @@
             document.getElementById('finalScore').textContent = score;
             document.getElementById('finalHighScore').textContent = highScore;
             
-            // Показать кнопку приза если набрано достаточно очков
             const prizeBtn = document.getElementById('prizeBtn');
-            if (score >= 100) {
-                prizeBtn.style.display = 'inline-block';
-            } else {
-                prizeBtn.style.display = 'none';
-            }
+            prizeBtn.style.display = score >= 100 ? 'inline-block' : 'none';
             
             gameOverScreen.style.display = 'block';
         }
         
-        // Кнопка приза - ЗДЕСЬ УКАЖИ ССЫЛКУ НА СВОЙ КАНАЛ
+        // Кнопка приза - ЗАМЕНИ НА СВОЙ КАНАЛ
         document.getElementById('prizeBtn').addEventListener('click', () => {
-            // Замени на свой канал:
             const channelUrl = 'https://t.me/your_channel';
-            
-            // Для обычного браузера:
             window.open(channelUrl, '_blank');
             
-            // Для Telegram Mini App (раскомментируй если используешь):
+            // Для Telegram Mini App:
             // if (window.Telegram && window.Telegram.WebApp) {
             //     window.Telegram.WebApp.openTelegramLink(channelUrl);
             // }
         });
         
+        // Рисование персонажа
+        function drawPlayer() {
+            const x = player.x;
+            const y = player.y;
+            
+            // Анимация бега
+            if (!player.jumping) {
+                player.animSpeed += 0.2;
+                player.frame = Math.floor(player.animSpeed) % 4;
+            }
+            
+            // Голова (фиолетовая маска #aa18ed)
+            ctx.fillStyle = '#aa18ed';
+            ctx.fillRect(x + 10, y + 2, 12, 10);
+            
+            // Обводка головы (тонкая черная)
+            ctx.strokeStyle = PICO8.BLACK;
+            ctx.lineWidth = 1;
+            ctx.strokeRect(x + 10, y + 2, 12, 10);
+            
+            // Глаз
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(x + 16, y + 5, 3, 3);
+            
+            // Тело (черная куртка)
+            ctx.fillStyle = PICO8.BLACK;
+            ctx.fillRect(x + 8, y + 12, 14, 10);
+            
+            // Логотип (белая точка)
+            ctx.fillStyle = PICO8.WHITE;
+            ctx.fillRect(x + 14, y + 16, 2, 2);
+            
+            // Штаны (темно-серые)
+            ctx.fillStyle = PICO8.DARK_GRAY;
+            ctx.fillRect(x + 10, y + 22, 10, 4);
+            
+            if (player.jumping) {
+                // ПРЫЖОК: ноги поджаты, руки назад
+                
+                // Руки
+                ctx.fillStyle = PICO8.BLACK;
+                ctx.fillRect(x + 4, y + 14, 4, 6);
+                
+                // Ноги поджаты
+                ctx.fillStyle = PICO8.DARK_GRAY;
+                ctx.fillRect(x + 10, y + 24, 5, 6);
+                ctx.fillRect(x + 13, y + 26, 5, 6);
+                
+                // Кроссовки
+                ctx.fillStyle = PICO8.WHITE;
+                ctx.fillRect(x + 9, y + 28, 6, 3);
+                ctx.fillRect(x + 12, y + 30, 6, 3);
+                
+            } else {
+                // БЕГ: руки и ноги двигаются
+                
+                // Анимация рук (вперед-назад попеременно)
+                ctx.fillStyle = PICO8.BLACK;
+                if (player.frame === 0) {
+                    // Рука вперед
+                    ctx.fillRect(x + 20, y + 12, 4, 8);
+                } else if (player.frame === 1) {
+                    // Рука посередине
+                    ctx.fillRect(x + 3, y + 14, 5, 6);
+                } else if (player.frame === 2) {
+                    // Рука назад
+                    ctx.fillRect(x + 3, y + 16, 5, 6);
+                } else {
+                    // Рука вперед снова
+                    ctx.fillRect(x + 20, y + 14, 4, 6);
+                }
+                
+                // Анимация ног (4 фазы)
+                if (player.frame === 0) {
+                    // Левая вперед, правая назад
+                    ctx.fillStyle = PICO8.DARK_GRAY;
+                    ctx.fillRect(x + 14, y + 22, 5, 10);
+                    ctx.fillStyle = PICO8.WHITE;
+                    ctx.fillRect(x + 14, y + 30, 6, 3);
+                    
+                    ctx.fillStyle = PICO8.DARK_GRAY;
+                    ctx.fillRect(x + 8, y + 24, 5, 6);
+                    ctx.fillStyle = PICO8.WHITE;
+                    ctx.fillRect(x + 7, y + 28, 6, 3);
+                    
+                } else if (player.frame === 1) {
+                    // Обе под телом
+                    ctx.fillStyle = PICO8.DARK_GRAY;
+                    ctx.fillRect(x + 12, y + 22, 5, 10);
+                    ctx.fillStyle = PICO8.WHITE;
+                    ctx.fillRect(x + 11, y + 30, 6, 3);
+                    
+                    ctx.fillStyle = PICO8.DARK_GRAY;
+                    ctx.fillRect(x + 10, y + 22, 5, 10);
+                    ctx.fillStyle = PICO8.WHITE;
+                    ctx.fillRect(x + 9, y + 30, 6, 3);
+                    
+                } else if (player.frame === 2) {
+                    // Правая вперед, левая назад
+                    ctx.fillStyle = PICO8.DARK_GRAY;
+                    ctx.fillRect(x + 8, y + 22, 5, 10);
+                    ctx.fillStyle = PICO8.WHITE;
+                    ctx.fillRect(x + 7, y + 30, 6, 3);
+                    
+                    ctx.fillStyle = PICO8.DARK_GRAY;
+                    ctx.fillRect(x + 14, y + 24, 5, 6);
+                    ctx.fillStyle = PICO8.WHITE;
+                    ctx.fillRect(x + 13, y + 28, 6, 3);
+                    
+                } else {
+                    // Обе под телом (другая фаза)
+                    ctx.fillStyle = PICO8.DARK_GRAY;
+                    ctx.fillRect(x + 11, y + 22, 5, 10);
+                    ctx.fillStyle = PICO8.WHITE;
+                    ctx.fillRect(x + 10, y + 30, 6, 3);
+                    
+                    ctx.fillStyle = PICO8.DARK_GRAY;
+                    ctx.fillRect(x + 9, y + 22, 5, 10);
+                    ctx.fillStyle = PICO8.WHITE;
+                    ctx.fillRect(x + 8, y + 30, 6, 3);
+                }
+            }
+        }
+        
+        // Рисование препятствий
+        function drawObstacle(obs) {
+            ctx.fillStyle = obs.color;
+            
+            if (obs.type === 'hydrant') {
+                // Пожарный гидрант
+                ctx.fillRect(obs.x + 6, obs.y, 12, obs.height);
+                ctx.fillRect(obs.x, obs.y + 10, obs.width, 12);
+                ctx.fillStyle = PICO8.DARK_GRAY;
+                ctx.fillRect(obs.x + 8, obs.y + 5, 8, 8);
+            } else if (obs.type === 'cone') {
+                // Конус
+                ctx.beginPath();
+                ctx.moveTo(obs.x + obs.width/2, obs.y);
+                ctx.lineTo(obs.x, obs.y + obs.height);
+                ctx.lineTo(obs.x + obs.width, obs.y + obs.height);
+                ctx.closePath();
+                ctx.fill();
+                // Полоски
+                ctx.fillStyle = PICO8.WHITE;
+                ctx.fillRect(obs.x + 4, obs.y + 12, 12, 4);
+            } else if (obs.type === 'barrier') {
+                // Барьер
+                ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+                ctx.fillStyle = PICO8.BLACK;
+                for (let i = 0; i < obs.width; i += 8) {
+                    ctx.fillRect(obs.x + i, obs.y, 4, obs.height);
+                }
+            } else if (obs.type === 'sign') {
+                // Знак
+                ctx.fillRect(obs.x + 6, obs.y, 4, obs.height - 16);
+                ctx.fillRect(obs.x, obs.y, obs.width, 16);
+                ctx.fillStyle = PICO8.WHITE;
+                ctx.fillRect(obs.x + 2, obs.y + 2, 12, 12);
+            }
+            
+            // Контур
+            ctx.strokeStyle = PICO8.BLACK;
+            ctx.lineWidth = 2;
+            ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
+        }
+        
         // Основной игровой цикл
         function gameLoop() {
             if (!gameRunning) return;
             
-            // Очистка
-            ctx.fillStyle = '#1a1a2e';
+            // Фон - зимнее ночное небо Питера
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            gradient.addColorStop(0, '#0a0a1a');  // Почти чёрный
+            gradient.addColorStop(0.5, PICO8.DARK_BLUE);
+            gradient.addColorStop(1, PICO8.DARK_PURPLE);
+            ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Земля
-            ctx.fillStyle = '#0f3460';
+            // Звёзды (редкие, тусклые)
+            ctx.fillStyle = PICO8.LIGHT_GRAY;
+            for (let i = 0; i < 20; i++) {
+                const x = (i * 79 + 11) % canvas.width;
+                const y = (i * 43 + 7) % 200;
+                const brightness = (i % 3) === 0 ? PICO8.WHITE : PICO8.LIGHT_GRAY;
+                ctx.fillStyle = brightness;
+                ctx.fillRect(x, y, 1, 1);
+            }
+            
+            // Снег (большие пиксельные снежинки)
+            snowflakes.forEach(flake => {
+                flake.y += flake.speed;
+                if (flake.y > 340) {
+                    flake.y = -10;
+                    flake.x = Math.random() * canvas.width;
+                }
+                
+                ctx.fillStyle = PICO8.WHITE;
+                // Крестообразная снежинка
+                const size = flake.size;
+                ctx.fillRect(Math.floor(flake.x), Math.floor(flake.y), size, size);
+                if (size === 3) {
+                    ctx.fillRect(Math.floor(flake.x - 2), Math.floor(flake.y), 1, size);
+                    ctx.fillRect(Math.floor(flake.x + 3), Math.floor(flake.y), 1, size);
+                    ctx.fillRect(Math.floor(flake.x), Math.floor(flake.y - 2), size, 1);
+                    ctx.fillRect(Math.floor(flake.x), Math.floor(flake.y + 3), size, 1);
+                }
+            });
+            
+            // Питерские здания
+            buildings.forEach(building => {
+                building.x -= gameSpeed * 0.3;
+                if (building.x + building.width < 0) {
+                    building.x = canvas.width + 20;
+                    building.height = 150 + Math.random() * 180;
+                }
+                
+                // Здание (без контура)
+                ctx.fillStyle = building.color;
+                ctx.fillRect(building.x, 340 - building.height, building.width, building.height);
+                
+                // Статичные окна
+                building.windows.forEach(win => {
+                    if (win.lit) {
+                        ctx.fillStyle = PICO8.YELLOW;
+                    } else {
+                        ctx.fillStyle = '#0a0a1a';
+                    }
+                    ctx.fillRect(building.x + win.x, 340 - building.height + win.y, 6, 8);
+                });
+                
+                // Снег на крышах
+                ctx.fillStyle = PICO8.WHITE;
+                ctx.fillRect(building.x, 340 - building.height, building.width, 4);
+            });
+            
+            // Обочина (серая, внизу экрана)
+            ctx.fillStyle = PICO8.DARK_GRAY;
             ctx.fillRect(0, 340, canvas.width, 60);
             
-            // Линии на земле (декор)
-            ctx.strokeStyle = '#1a1a2e';
-            ctx.lineWidth = 2;
+            // Темная граница сверху обочины
+            ctx.fillStyle = '#1a1a2a';
+            ctx.fillRect(0, 340, canvas.width, 3);
+            
+            // Снежные кучки
+            ctx.fillStyle = PICO8.LIGHT_GRAY;
             for (let i = 0; i < canvas.width; i += 40) {
-                ctx.beginPath();
-                ctx.moveTo(i - (score % 40), 340);
-                ctx.lineTo(i - (score % 40), 400);
-                ctx.stroke();
+                const snowX = (i - (score % 40)) % canvas.width;
+                ctx.fillRect(snowX, 341, 16, 2);
+                ctx.fillRect(snowX + 4, 343, 8, 2);
             }
             
             // Обновление игрока
             player.velY += player.gravity;
             player.y += player.velY;
             
-            if (player.y >= 300) {
-                player.y = 300;
+            if (player.y >= 308) {
+                player.y = 308;
                 player.velY = 0;
                 player.jumping = false;
             }
             
-            // Рисуем игрока (квадрат с глазами)
-            ctx.fillStyle = '#e94560';
-            ctx.fillRect(player.x, player.y, player.width, player.height);
-            
-            // Глаза
-            ctx.fillStyle = '#fff';
-            ctx.fillRect(player.x + 8, player.y + 10, 8, 8);
-            ctx.fillRect(player.x + 24, player.y + 10, 8, 8);
-            
-            // Зрачки
-            ctx.fillStyle = '#000';
-            ctx.fillRect(player.x + 12, player.y + 14, 4, 4);
-            ctx.fillRect(player.x + 28, player.y + 14, 4, 4);
+            drawPlayer();
             
             // Обновление препятствий
             obstacleTimer++;
-            const spawnDelay = Math.max(40, 80 - Math.floor(score / 50));
+            const spawnDelay = Math.max(35, 70 - Math.floor(score / 50));
             
             if (obstacleTimer > spawnDelay) {
                 createObstacle();
@@ -568,41 +714,17 @@
                 const obs = obstacles[i];
                 obs.x -= gameSpeed;
                 
-                // Рисуем препятствие
-                if (obs.type === 'box') {
-                    ctx.fillStyle = '#00d9ff';
-                    ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                    ctx.strokeStyle = '#0099cc';
-                    ctx.lineWidth = 3;
-                    ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
-                } else if (obs.type === 'spike') {
-                    ctx.fillStyle = '#ff6b81';
-                    ctx.beginPath();
-                    ctx.moveTo(obs.x, obs.y + obs.height);
-                    ctx.lineTo(obs.x + obs.width / 2, obs.y);
-                    ctx.lineTo(obs.x + obs.width, obs.y + obs.height);
-                    ctx.closePath();
-                    ctx.fill();
-                } else { // tall
-                    ctx.fillStyle = '#16c79a';
-                    ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
-                    ctx.strokeStyle = '#0f9b7a';
-                    ctx.lineWidth = 3;
-                    ctx.strokeRect(obs.x, obs.y, obs.width, obs.height);
-                }
+                drawObstacle(obs);
                 
-                // Проверка столкновения
                 if (checkCollision(player, obs)) {
                     endGame();
                     return;
                 }
                 
-                // Удаление препятствий за экраном
                 if (obs.x + obs.width < 0) {
                     obstacles.splice(i, 1);
                     score += 10;
                     
-                    // Увеличение сложности
                     if (score % 100 === 0) {
                         gameSpeed += 0.5;
                     }
